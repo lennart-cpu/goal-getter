@@ -1,0 +1,70 @@
+body { margin: 0; display: flex; font-family: sans-serif; background: #121212; color: #e0e0e0; min-height: 100vh; }
+nav { width: 250px; background: #1e1e1e; padding: 20px; border-right: 1px solid #333; }
+nav a { color: #4caf50; text-decoration: none; display: block; margin: 20px 0; font-weight: bold; }
+.container { background: #2c2c2c; padding: 30px; border-radius: 20px; width: 80%; max-width: 600px; margin: 50px auto; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: none; background: #383838; color: white; box-sizing: border-box; }
+button { background: #4caf50; color: white; padding: 12px 25px; border-radius: 8px; border: none; cursor: pointer; font-weight: bold; }
+canvas { background: #383838; margin-top: 20px; border-radius: 10px; }
+
+/*Nicht genutzt*/
+/*Accordion Menü*/
+/* Untermenü-Styling */
+#submenu a {
+    font-size: 0.9rem; /* Etwas kleiner */
+    color: #b0b0b0;    /* Etwas helleres grau */
+    margin: 10px 0;
+}
+#submenu a:hover {
+    color: #4caf50;
+}
+
+/*Infoboxen Kalkulatorische Zinsen*/
+.info-box {
+    background-color: #3e3e3e;
+    border-left: 4px solid #4caf50;
+    padding: 10px;
+    margin-bottom: 20px;
+    font-size: 0.85rem;
+    color: #b0b0b0;
+    border-radius: 0 5px 5px 0;
+}
+.info-box strong { color: #4caf50; }
+
+/* Styling für die Ergebnistabelle */
+.result-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    color: white; /* In der App hell */
+}
+
+.result-table td {
+    padding: 8px;
+    border-bottom: 1px solid #444;
+}
+
+.result-table .label {
+    font-weight: bold;
+    width: 60%;
+}
+
+.result-table .value {
+    text-align: right;
+}
+
+/* PDF-Spezialmodus */
+.pdf-mode {
+    background-color: white !important;
+    padding: 30px !important;
+    border: none !important;
+}
+
+.pdf-mode * {
+    color: #1a1a1a !important; /* Schwarze Schrift im PDF */
+    border-color: #ddd !important;
+}
+
+.pdf-mode .chart-container {
+    background-color: white !important;
+    border: 1px solid #ccc !important;
+}

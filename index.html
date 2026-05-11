@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Business Calculator</title>
+    <link rel="stylesheet" href="style.css" />
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>-->
+  </head>
+  <body>
+    <nav>
+      <h1>Business Calculator</h1>
+      <ul>
+        <li><a href="#" onclick="showSection('start')">Startseite</a></li>
+
+        <li>
+          <a href="#" onclick="toggleSubmenu('submenu-afa')"
+            >Abschreibungen ▼</a
+          >
+          <ul
+            id="submenu-afa"
+            style="display: none; list-style: none; padding-left: 20px"
+          >
+            <li><a href="#" onclick="showSection('anlagen')">Linear</a></li>
+            <li>
+              <a href="#" onclick="showSection('anlagen-geo')">Geo-Degressiv</a>
+            </li>
+            <li>
+              <a href="#" onclick="showSection('anlagen-arith')"
+                >Arith.-Degressiv</a
+              >
+            </li>
+            <li>
+              <a href="#" onclick="showSection('anlagen-leistung')"
+                >Leistungsabhängig</a
+              >
+            </li>
+          </ul>
+        </li>
+
+        <li>
+          <a href="#" onclick="toggleSubmenu('submenu-zinsen')"
+            >Kapital & Zinsen ▼</a
+          >
+          <ul
+            id="submenu-zinsen"
+            style="display: none; list-style: none; padding-left: 20px"
+          >
+            <li>
+              <a href="#" onclick="showSection('kapital-zinsen')"
+                >Kalk. Zinsen</a
+              >
+            </li>
+            <li>
+              <a href="#" onclick="showSection('wacc-rechner')">WACC-Rechner</a>
+            </li>
+            <li>
+              <a href="#" onclick="showSection('capm-rechner')"
+                >EK-Kosten (CAPM)</a
+              >
+            </li>
+          </ul>
+        </li>
+
+        <li>
+          <a href="#" onclick="showSection('deckungsbeitrag')"
+            >Deckungsbeitrag</a
+          >
+        </li>
+      </ul>
+    </nav>
+
+    <main id="app-content">
+      <div id="start" class="container">
+        <h1>Willkommen</h1>
+        <p>
+          Wähle ein Modul aus der Navigation aus, um mit der Berechnung zu
+          beginnen.
+        </p>
+      </div>
+
+      <div id="anlagen" class="container" style="display: none">
+        <h2>Lineare Abschreibung</h2>
+        <div class="input-group">
+          <label>Anschaffungskosten (€):</label
+          ><input type="number" id="ak" placeholder="z.B. 10000" />
+        </div>
+        <div class="input-group">
+          <label>Restbuchwert (€):</label
+          ><input type="number" id="rw" placeholder="0" />
+        </div>
+        <div class="input-group">
+          <label>Nutzungsdauer (Jahre):</label
+          ><input type="number" id="nd" placeholder="5" />
+        </div>
+        <button onclick="calcAnlagen()">Berechnen</button>
+        <div id="ergebnis-anlagen"></div>
+        <canvas id="chartAnlagen"></canvas>
+      </div>
+
+      <div id="anlagen-geo" class="container" style="display: none">
+        <h2>Geometrisch-degressive AfA</h2>
+        <div class="input-group">
+          <label>Anschaffungskosten (€):</label
+          ><input type="number" id="ak-geo" />
+        </div>
+        <div class="input-group">
+          <label>Nutzungsdauer (Jahre):</label
+          ><input type="number" id="nd-geo" />
+        </div>
+        <div class="input-group">
+          <label>AfA-Satz (%):</label><input type="number" id="satz-geo" />
+        </div>
+        <button onclick="calcGeo()">Berechnen</button>
+        <div id="ergebnis-geo"></div>
+        <canvas id="chartGeo"></canvas>
+      </div>
+
+      <div id="anlagen-arith" class="container" style="display: none">
+        <h2>Arithmetisch-degressive AfA</h2>
+        <div class="input-group">
+          <label>Anschaffungskosten (€):</label
+          ><input type="number" id="ak-arith" />
+        </div>
+        <div class="input-group">
+          <label>Restbuchwert (€):</label><input type="number" id="rw-arith" />
+        </div>
+        <div class="input-group">
+          <label>Nutzungsdauer (Jahre):</label
+          ><input type="number" id="nd-arith" />
+        </div>
+        <button onclick="calcArith()">Berechnen</button>
+        <div id="ergebnis-arith"></div>
+        <canvas id="chartArith"></canvas>
+      </div>
+
+      <div id="anlagen-leistung" class="container" style="display: none">
+        <h2>Leistungsabhängige AfA</h2>
+        <div class="input-group">
+          <label>Anschaffungskosten (€):</label
+          ><input type="number" id="ak-leistung" />
+        </div>
+        <div class="input-group">
+          <label>Restwert (€):</label><input type="number" id="rw-leistung" />
+        </div>
+        <div class="input-group">
+          <label>Gesamtleistung (max):</label
+          ><input type="number" id="ges-leistung" />
+        </div>
+        <div class="input-group">
+          <label>Leistung laufendes Jahr:</label
+          ><input type="number" id="akt-leistung" />
+        </div>
+        <button onclick="calcLeistung()">Berechnen</button>
+        <div id="ergebnis-leistung"></div>
+      </div>
+
+      <div id="kapital-zinsen" class="container" style="display: none">
+        <h2>Kalkulatorische Zinsen</h2>
+        <div class="input-group">
+          <label>Anlagevermögen (€):</label
+          ><input type="number" id="anl-vermoegen" />
+        </div>
+        <div class="input-group">
+          <label>Umlaufvermögen (€):</label
+          ><input type="number" id="uml-vermoegen" />
+        </div>
+        <div class="input-group">
+          <label>Abzugskapital (€):</label
+          ><input type="number" id="abzug-kapital" />
+        </div>
+        <div class="input-group">
+          <label>Zinssatz (%):</label><input type="number" id="zins-satz" />
+        </div>
+        <button onclick="calcZinsen()">Berechnen</button>
+        <div id="ergebnis-zinsen"></div>
+      </div>
+
+      <div id="wacc-rechner" class="container" style="display: none">
+        <h2>WACC-Rechner</h2>
+        <div class="input-group">
+          <label>Eigenkapital (€):</label><input type="number" id="ek" />
+        </div>
+        <div class="input-group">
+          <label>Fremdkapital (€):</label><input type="number" id="fk" />
+        </div>
+        <div class="input-group">
+          <label>EK-Kosten (%):</label><input type="number" id="rek" />
+        </div>
+        <div class="input-group">
+          <label>FK-Kosten (%):</label><input type="number" id="rfk" />
+        </div>
+        <div class="input-group">
+          <label>Steuersatz (%):</label><input type="number" id="steuersatz" />
+        </div>
+        <button onclick="calcWACC()">WACC berechnen</button>
+        <div id="ergebnis-wacc"></div>
+      </div>
+
+      <div id="capm-rechner" class="container" style="display: none">
+        <h2>EK-Kosten (CAPM)</h2>
+        <div class="input-group">
+          <label>Risikofreier Zins (%):</label><input type="number" id="rf" />
+        </div>
+        <div class="input-group">
+          <label>Marktrendite (%):</label><input type="number" id="rm" />
+        </div>
+        <div class="input-group">
+          <label>Beta-Faktor (β):</label><input type="number" id="beta" />
+        </div>
+        <button onclick="calcCAPM()">EK-Kosten berechnen</button>
+        <div id="ergebnis-capm"></div>
+      </div>
+
+      <div id="deckungsbeitrag" class="container" style="display: none">
+        <h2>Deckungsbeitrag</h2>
+        <div class="input-group">
+          <label>Verkaufspreis (€):</label
+          ><input type="number" id="vp" value="50" />
+        </div>
+        <div class="input-group">
+          <label>Variable Kosten (€):</label
+          ><input type="number" id="kv" value="30" />
+        </div>
+        <div class="input-group">
+          <label>Fixkosten gesamt (€):</label
+          ><input type="number" id="kf" value="20000" />
+        </div>
+        <div class="input-group">
+          <label>Ist-Menge (Stück):</label
+          ><input type="number" id="ist-menge" value="1500" />
+        </div>
+        <button onclick="calcDB()">Berechnen</button>
+
+        <div
+          style="
+            width: 100%;
+            max-width: 500px;
+            height: 350px;
+            margin: 20px auto;
+            background: #1a1a1a;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #333;
+          "
+        >
+          <canvas id="dbChart"></canvas>
+        </div>
+
+        <div id="ergebnis-db"></div>
+
+        <button
+          onclick="exportDBPDF()"
+          style="background-color: #e74c3c; margin-top: 20px; width: 100%"
+        >
+          💾 PDF Analyse-Bericht exportieren
+        </button>
+      </div>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
